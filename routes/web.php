@@ -14,3 +14,16 @@
 Route::get('/', function () {
     return view('contenido/contenido');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+
+Route::get('/categorias', 'CategoriaController@index');
+Route::post('/categorias/registrar', 'CategoriaController@store');
+Route::put('/categorias/actualizar', 'CategoriaController@update');
+Route::put('/categorias/desactivar', 'CategoriaController@desactivar');
+Route::put('/categorias/activar', 'CategoriaController@activar');
+
+
