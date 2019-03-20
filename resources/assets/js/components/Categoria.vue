@@ -19,12 +19,12 @@
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <div class="input-group">
-                                    <select class="form-control col-md-3" id="opcion" name="opcion">
+                                    <select class="form-control col-md-3"  v-model="criterio" >
                                       <option value="nombre">Nombre</option>
                                       <option value="descripcion">Descripción</option>
                                     </select>
-                                    <input type="text" id="texto" name="texto" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-model="buscar" @keyup.enter="listarCategoria(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarCategoria(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                                          	<button type="button" class="btn btn-danger btn-sm" @click="desactivarCategoria(categoria.id)"><i class="icon-trash">Desactivar</i></button>
                                          </template>
                                          <template v-else>
-                                         	<button type="button" class="btn btn-info btn-sm" @click="activarCategoria(categoria.id)"><i class="icon-ok">Activar</i></button>
+                                         	<button type="button" class="btn btn-info btn-sm" @click="activarCategoria(categoria.id)"><i class="icon-check">Activar</i></button>
                                          </template>
                                     </td>
                                     <td v-text="categoria.nombre"></td>
@@ -70,23 +70,14 @@
                         </table>
                         <nav>
                             <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="#">Ant</a>
+                                <li class="page-item" v-if="pagination.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent = "cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
                                 </li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">3</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">4</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">Sig</a>
+                                <li class="page-item " v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                </li> 
+                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -139,7 +130,7 @@
                     <!-- /.modal-content -->
                 </div>
                 <!-- /.modal-dialog -->
-            </div>
+            </div> 
             <!--Fin del modal--> 
         </main>
 </template>
@@ -156,19 +147,65 @@
     			tituloModal : '',
     			tipoAccion : 0,
     			errorCategoria : 0,
-    			errorMostrarMsjCategoria : []
+    			errorMostrarMsjCategoria : [],
+    			pagination : {
+    				'total' : 0,
+    				'current_page' : 0,
+    				'per_page' : 0,
+    				'last_page' : 0,
+    				'from' : 0,
+    				'to' : 0,
+    			},
+    			offset : 3,
+    			criterio : 'nombre',
+    			buscar : ''
+    		}
+    	},
+    	computed : {
+    		isActived: function(){
+    			return this.pagination.current_page;
+    		},
+    		pagesNumber: function(){
+    			if(!this.pagination.to){
+    				return [];
+    			}
+    			var from = this.pagination.current_page - this.offset;
+    			if(from < 1){
+    				from = 1;
+    			}
+
+    			var to = from + (this.offset * 2);
+    			if (to >= this.pagination.last_page){
+    				to = this.pagination.last_page;
+    			}
+
+    			var pagesArray = [];
+    			while(from <= to){
+    				pagesArray.push(from);
+    				from++;
+    			}
+    			return pagesArray;
+
     		}
     	},
     	methods: {
-    		listarCategoria(){
+    		listarCategoria(page, buscar, criterio){
     			let me = this;
-    			axios.get('/categorias')
+    			var url = '/categorias?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
+    			axios.get(url)
     			.then((response)=>{
-    				me.arrayCategoria = response.data;
+    				var respuesta = response.data;
+    				me.arrayCategoria = respuesta.categorias.data;
+    				me.pagination = respuesta.pagination;
     			})
     			.catch((error)=>{
     				console.log(error);
     			})
+    		},
+    		cambiarPagina(page, buscar, criterio){
+    			let me = this;
+    			me.pagination.current_page = page;
+    			me.listarCategoria(page,buscar,criterio);
     		},
     		registrarCategoria(){
     			if(this.validarCategoria()){
@@ -183,7 +220,7 @@
     			})
     			.then((response)=>{
     				me.cerrarModal();
-    				me.listarCategoria();
+    				me.listarCategoria(1,'','nombre');
     			})
     			.catch((error)=>{
     				console.log(error);
@@ -203,13 +240,13 @@
     			})
     			.then((response)=>{
     				me.cerrarModal();
-    				me.listarCategoria();
+    				me.listarCategoria(1,'','nombre');
     			})
     			.catch((error)=>{
     				console.log(error);
     			})
     		},
-    		desactivarCategoria(){
+    		desactivarCategoria(id){
     			const swalWithBootstrapButtons = Swal.mixin({
 				  customClass: {
 				    confirmButton: 'btn btn-success',
@@ -219,29 +256,99 @@
 				})
 
 				swalWithBootstrapButtons.fire({
-				  title: 'Are you sure?',
-				  text: "You won't be able to revert this!",
+				  title: 'Estás seguro?',
+				  text: "Quieres desactivar la categoria!",
 				  type: 'warning',
 				  showCancelButton: true,
-				  confirmButtonText: 'Yes, delete it!',
-				  cancelButtonText: 'No, cancel!',
+				  confirmButtonText: 'Si, borralo!',
+				  cancelButtonText: 'No, cancelar!',
 				  reverseButtons: true
 				}).then((result) => {
 				  if (result.value) {
-				    swalWithBootstrapButtons.fire(
-				      'Deleted!',
-				      'Your file has been deleted.',
-				      'success'
-				    )
+
+				  	let me = this;
+
+	    			axios.put('/categorias/desactivar',{ 
+	    				'id' : id
+	    			})
+	    			.then((response)=>{ 
+	    				
+	    				swalWithBootstrapButtons.fire(
+					      'Desactivado!',
+					      'Su archivo ha sido eliminado.',
+					      'success'
+					    )
+
+	    				me.listarCategoria(1,'','nombre');
+
+	    			})
+	    			.catch((error)=>{
+	    				console.log(error);
+	    			})
+
+				    
 				  } else if (
 				    // Read more about handling dismissals
 				    result.dismiss === Swal.DismissReason.cancel
 				  ) {
-				    swalWithBootstrapButtons.fire(
-				      'Cancelled',
-				      'Your imaginary file is safe :)',
-				      'error'
-				    )
+				    //swalWithBootstrapButtons.fire(
+				    //  'Cancelled',
+				    //  'Tu archivo imaginario es seguro :)',
+				    //  'error'
+				    //)
+				  }
+				})
+    		},
+    		activarCategoria(id){
+    			const swalWithBootstrapButtons = Swal.mixin({
+				  customClass: {
+				    confirmButton: 'btn btn-success',
+				    cancelButton: 'btn btn-danger'
+				  },
+				  buttonsStyling: false,
+				})
+
+				swalWithBootstrapButtons.fire({
+				  title: 'Estás seguro?',
+				  text: "Quieres activar la categoria!",
+				  type: 'warning',
+				  showCancelButton: true,
+				  confirmButtonText: 'Si, borralo!',
+				  cancelButtonText: 'No, cancelar!',
+				  reverseButtons: true
+				}).then((result) => {
+				  if (result.value) {
+
+				  	let me = this;
+
+	    			axios.put('/categorias/activar',{ 
+	    				'id' : id
+	    			})
+	    			.then((response)=>{ 
+	    				
+	    				swalWithBootstrapButtons.fire(
+					      'Desactivado!',
+					      'Su archivo ha sido activado.',
+					      'success'
+					    )
+
+	    				me.listarCategoria(1,'','nombre');
+
+	    			})
+	    			.catch((error)=>{
+	    				console.log(error);
+	    			})
+
+				    
+				  } else if (
+				    // Read more about handling dismissals
+				    result.dismiss === Swal.DismissReason.cancel
+				  ) {
+				    //swalWithBootstrapButtons.fire(
+				    //  'Cancelled',
+				    //  'Tu archivo imaginario es seguro :)',
+				    //  'error'
+				    //)
 				  }
 				})
     		},
@@ -294,7 +401,7 @@
     		}
     	},
         mounted() {
-            this.listarCategoria();
+            this.listarCategoria(1,this.buscar,this.criterio);
         }
     }
 </script>
