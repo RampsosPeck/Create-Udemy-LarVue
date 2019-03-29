@@ -14,12 +14,18 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->integer('id')->unsigned();
+            $table->foreign('id')->references('id')->on('personas')->onDelete('cascade');
+
+            $table->string('usuario')->unique(); 
             $table->string('password');
+            $table->boolean('condicion')->default(1);
+
+            $table->integer('idrol')->unsigned();
+            $table->foreign('idrol')->references('id')->on('roles');
+
             $table->rememberToken();
-            $table->timestamps();
+            //$table->timestamps();
         });
     }
 
