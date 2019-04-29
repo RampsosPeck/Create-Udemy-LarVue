@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Sistema Ventas Laravel Vue Js- IncanatoIT">
-    <meta name="author" content="Incanatoit.com">
+    <meta name="description" content="Sistema Ventas Laravel Vue Js">
+    <meta name="author" content="Ing. Jorge Peralta">
     <meta name="keyword" content="Sistema ventas Laravel Vue Js, Sistema compras Laravel Vue Js">
     <link rel="shortcut icon" href="img/favicon.png">
     <title>Sistema Ventas - IncanatoIT</title>
@@ -56,22 +56,33 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     <img src="img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
-                    <span class="d-md-down-none">admin </span>
+                    <span class="d-md-down-none">{{ Auth::user()->usuario }}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <div class="dropdown-header text-center">
                         <strong>Cuenta</strong>
                     </div>
                     <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Perfil</a>
-                    <a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Cerrar sesión</a>
+                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-lock"></i> Cerrar sesión</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
                 </div>
             </li>
         </ul>
     </header>
 
     <div class="app-body">
-        
-        @include('plantilla.sidebar')
+        @if(Auth::check())
+            @if(Auth::user()->idrol == 1)
+              @include('plantilla.sidebaradmin')
+                @elseif (Auth::user()->idrol == 2)
+                    @include('plantilla.sidebarvende')
+                @elseif (Auth::user()->idrol == 3)
+                    @include('plantilla.sidebaralma')
+                @else
+            @endif
+        @endif 
         <!-- Contenido Principal -->
         @yield('contenido')
         <!-- /Fin del contenido principal -->
