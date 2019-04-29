@@ -20,7 +20,7 @@
                                 <div class="input-group">
                                     <select class="form-control col-md-3"  v-model="criterio" >
                                       <option value="nombre">Nombre</option>
-                                      <option value="num_documento">Docuemnto</option>
+                                      <option value="num_documento">Documento</option>
                                       <option value="email">Email</option>
                                       <option value="telefono">Teléfono</option>
                                     </select>

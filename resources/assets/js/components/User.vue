@@ -405,83 +405,111 @@
                 }
             },
             desactivarUsuario(id){
-               swal({
-                title: 'Esta seguro de desactivar este usuario?',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Aceptar!',
-                cancelButtonText: 'Cancelar',
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false,
-                reverseButtons: true
+                const swalWithBootstrapButtons = Swal.mixin({
+                  customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                  },
+                  buttonsStyling: false,
+                })
+
+                swalWithBootstrapButtons.fire({
+                  title: 'Estás seguro?',
+                  text: "Quieres desactivar el usuario!",
+                  type: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'Si, desactivar!',
+                  cancelButtonText: 'No, cancelar!',
+                  reverseButtons: true
                 }).then((result) => {
-                if (result.value) {
+                  if (result.value) {
+
                     let me = this;
 
-                    axios.put('/user/desactivar',{
-                        'id': id
-                    }).then(function (response) {
-                        me.listarPersona(1,'','nombre');
-                        swal(
-                        'Desactivado!',
-                        'El registro ha sido desactivado con éxito.',
-                        'success'
+                    axios.put('/user/desactivar',{ 
+                        'id' : id
+                    })
+                    .then((response)=>{ 
+                        
+                        swalWithBootstrapButtons.fire(
+                          'Desactivado!',
+                          'Su archivo ha sido eliminado.',
+                          'success'
                         )
-                    }).catch(function (error) {
+
+                        me.listarPersona(1,'','nombre');
+
+                    })
+                    .catch((error)=>{
                         console.log(error);
-                    });
+                    })
+
                     
-                    
-                } else if (
+                  } else if (
                     // Read more about handling dismissals
-                    result.dismiss === swal.DismissReason.cancel
-                ) {
-                    
-                }
-                }) 
+                    result.dismiss === Swal.DismissReason.cancel
+                  ) {
+                    //swalWithBootstrapButtons.fire(
+                    //  'Cancelled',
+                    //  'Tu archivo imaginario es seguro :)',
+                    //  'error'
+                    //)
+                  }
+                })
             },
             activarUsuario(id){
-               swal({
-                title: 'Esta seguro de activar este usuario?',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Aceptar!',
-                cancelButtonText: 'Cancelar',
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false,
-                reverseButtons: true
+                const swalWithBootstrapButtons = Swal.mixin({
+                  customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                  },
+                  buttonsStyling: false,
+                })
+
+                swalWithBootstrapButtons.fire({
+                  title: 'Estás seguro?',
+                  text: "Quieres activar el usuario!",
+                  type: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'Si, activar!',
+                  cancelButtonText: 'No, cancelar!',
+                  reverseButtons: true
                 }).then((result) => {
-                if (result.value) {
+                  if (result.value) {
+
                     let me = this;
 
-                    axios.put('/user/activar',{
-                        'id': id
-                    }).then(function (response) {
-                        me.listarPersona(1,'','nombre');
-                        swal(
-                        'Activado!',
-                        'El registro ha sido activado con éxito.',
-                        'success'
+                    axios.put('/user/activar',{ 
+                        'id' : id
+                    })
+                    .then((response)=>{ 
+                        
+                        swalWithBootstrapButtons.fire(
+                          'Activado!',
+                          'Su archivo ha sido activado.',
+                          'success'
                         )
-                    }).catch(function (error) {
+
+                        me.listarPersona(1,'','nombre');
+
+                    })
+                    .catch((error)=>{
                         console.log(error);
-                    });
+                    })
+
                     
-                    
-                } else if (
+                  } else if (
                     // Read more about handling dismissals
-                    result.dismiss === swal.DismissReason.cancel
-                ) {
-                    
-                }
-                }) 
-            }
+                    result.dismiss === Swal.DismissReason.cancel
+                  ) {
+                    //swalWithBootstrapButtons.fire(
+                    //  'Cancelled',
+                    //  'Tu archivo imaginario es seguro :)',
+                    //  'error'
+                    //)
+                  }
+                })
+            },
         },
         mounted() {
             this.listarPersona(1,this.buscar,this.criterio);

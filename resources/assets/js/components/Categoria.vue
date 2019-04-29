@@ -326,7 +326,7 @@
 	    			.then((response)=>{ 
 	    				
 	    				swalWithBootstrapButtons.fire(
-					      'Desactivado!',
+					      'Activado!',
 					      'Su archivo ha sido activado.',
 					      'success'
 					    )

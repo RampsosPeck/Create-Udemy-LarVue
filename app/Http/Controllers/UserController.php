@@ -84,7 +84,7 @@ class UserController extends Controller
             $user->usuario = $request->usuario;
             $user->password = bcrypt($request->password);
             $user->condicion = '1';
-            $user->idrol = $request->id;
+            $user->idrol = $request->idrol;
             $user->id = $persona->id;
             $user->save();
 
@@ -117,7 +117,7 @@ class UserController extends Controller
             \DB::beginTransaction();
             $user = User::findOrFail($request->id);
 
-            $persona = Persona::findOrFail($persona->id);
+            $persona = Persona::findOrFail($user->id);
             
             $persona->nombre = $request->nombre;
             $persona->tipo_documento = $request->tipo_documento;
@@ -131,7 +131,7 @@ class UserController extends Controller
             $user->usuario = $request->usuario;
             $user->password = bcrypt($request->password);
             $user->condicion = '1';
-            $user->idrol = $request->id; 
+            $user->idrol = $request->idrol; 
             $user->save();
 
             \DB::commit();
@@ -139,7 +139,7 @@ class UserController extends Controller
         }catch(Exception $e) {
             \DB::rollBack();
         }
-    }
+    } 
 
     public function desactivar(Request $request)
     {
@@ -155,6 +155,4 @@ class UserController extends Controller
         $user->condicion = '1';
         $user->save();
     }
-
-
 }

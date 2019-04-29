@@ -34436,7 +34436,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         'id': id
                     }).then(function (response) {
 
-                        swalWithBootstrapButtons.fire('Desactivado!', 'Su archivo ha sido activado.', 'success');
+                        swalWithBootstrapButtons.fire('Activado!', 'Su archivo ha sido activado.', 'success');
 
                         me.listarCategoria(1, '', 'nombre');
                     }).catch(function (error) {
@@ -39556,7 +39556,7 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("option", { attrs: { value: "num_documento" } }, [
-                      _vm._v("Docuemnto")
+                      _vm._v("Documento")
                     ]),
                     _vm._v(" "),
                     _c("option", { attrs: { value: "email" } }, [
@@ -42470,65 +42470,91 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         desactivarUsuario: function desactivarUsuario(id) {
             var _this = this;
 
-            swal({
-                title: 'Esta seguro de desactivar este usuario?',
+            var swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            });
+
+            swalWithBootstrapButtons.fire({
+                title: 'Estás seguro?',
+                text: "Quieres desactivar el usuario!",
                 type: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Aceptar!',
-                cancelButtonText: 'Cancelar',
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false,
+                confirmButtonText: 'Si, desactivar!',
+                cancelButtonText: 'No, cancelar!',
                 reverseButtons: true
             }).then(function (result) {
                 if (result.value) {
+
                     var me = _this;
 
                     axios.put('/user/desactivar', {
                         'id': id
                     }).then(function (response) {
+
+                        swalWithBootstrapButtons.fire('Desactivado!', 'Su archivo ha sido eliminado.', 'success');
+
                         me.listarPersona(1, '', 'nombre');
-                        swal('Desactivado!', 'El registro ha sido desactivado con éxito.', 'success');
                     }).catch(function (error) {
                         console.log(error);
                     });
                 } else if (
                 // Read more about handling dismissals
-                result.dismiss === swal.DismissReason.cancel) {}
+                result.dismiss === Swal.DismissReason.cancel) {
+                    //swalWithBootstrapButtons.fire(
+                    //  'Cancelled',
+                    //  'Tu archivo imaginario es seguro :)',
+                    //  'error'
+                    //)
+                }
             });
         },
         activarUsuario: function activarUsuario(id) {
             var _this2 = this;
 
-            swal({
-                title: 'Esta seguro de activar este usuario?',
+            var swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            });
+
+            swalWithBootstrapButtons.fire({
+                title: 'Estás seguro?',
+                text: "Quieres activar el usuario!",
                 type: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Aceptar!',
-                cancelButtonText: 'Cancelar',
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false,
+                confirmButtonText: 'Si, activar!',
+                cancelButtonText: 'No, cancelar!',
                 reverseButtons: true
             }).then(function (result) {
                 if (result.value) {
+
                     var me = _this2;
 
                     axios.put('/user/activar', {
                         'id': id
                     }).then(function (response) {
+
+                        swalWithBootstrapButtons.fire('Activado!', 'Su archivo ha sido activado.', 'success');
+
                         me.listarPersona(1, '', 'nombre');
-                        swal('Activado!', 'El registro ha sido activado con éxito.', 'success');
                     }).catch(function (error) {
                         console.log(error);
                     });
                 } else if (
                 // Read more about handling dismissals
-                result.dismiss === swal.DismissReason.cancel) {}
+                result.dismiss === Swal.DismissReason.cancel) {
+                    //swalWithBootstrapButtons.fire(
+                    //  'Cancelled',
+                    //  'Tu archivo imaginario es seguro :)',
+                    //  'error'
+                    //)
+                }
             });
         }
     },
