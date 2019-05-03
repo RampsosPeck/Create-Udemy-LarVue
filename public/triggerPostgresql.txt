@@ -1,0 +1,50 @@
+select * from  ingresos
+update ingresos set estado = 'Registrado' where id = 2
+select * from detalle_ingresos 
+
+select * from proveedores
+
+ 
+DROP TRIGGER tr_updStockIngreso ON detalle_ingresos
+
+
+CREATE  TRIGGER tr_updStockIngreso AFTER INSERT ON detalle_ingresos
+ FOR EACH ROW  
+  EXECUTE PROCEDURE log_last_name_changes();
+
+ 
+CREATE OR REPLACE FUNCTION log_last_name_changes()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+  UPDATE articulos SET stock = stock - NEW.cantidad 
+ WHERE articulos.id = NEW.idarticulo;
+  RETURN NEW;
+END;
+$BODY$
+ LANGUAGE plpgsql VOLATILE -- Says the function is implemented in the plpgsql language; VOLATILE says the function has side effects.
+COST 100;
+
+
+DROP TRIGGER tr_updStockIngresoAnular ON ingresos
+
+CREATE  TRIGGER tr_updStockIngresoAnular AFTER UPDATE ON ingresos
+ FOR EACH ROW  
+  EXECUTE PROCEDURE anulandos();
+
+ 
+CREATE OR REPLACE FUNCTION anulandos()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+  UPDATE articulos  set stock = stock + di.cantidad
+    FROM detalle_ingresos  as di
+      where di.idarticulo = articulos.id
+     AND di.idingreso = new.id;
+ 
+  RETURN NEW;
+ 
+END;
+$BODY$
+ LANGUAGE plpgsql VOLATILE -- Says the function is implemented in the plpgsql language; VOLATILE says the function has side effects.
+COST 100;

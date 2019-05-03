@@ -27,14 +27,14 @@ class IngresoController extends Controller
             ->select('ingresos.id','ingresos.tipo_comprobante','ingresos.serie_comprobante',
                 'ingresos.num_comprobante','ingresos.fecha_hora','ingresos.impuesto','ingresos.total',
                 'ingresos.estado','personas.nombre','users.usuario')
-            ->orderBy('ingresos.id','desc')->paginate(3);
+            ->orderBy('ingresos.id','desc')->paginate(10);
         }else{
             $ingresos = Ingreso::join('personas','ingresos.idproveedor','=','personas.id')
             ->join('users','ingresos.idusuario','=','users.id')
             ->select('ingresos.id','ingresos.tipo_comprobante','ingresos.serie_comprobante',
                 'ingresos.num_comprobante','ingresos.fecha_hora','ingresos.impuesto','ingresos.total',
                 'ingresos.estado','personas.nombre','users.usuario')
-            ->where('ingresos.'.$criterio, 'like', '%'.$buscar.'%')->orderBy('ingresos.id','desc')->paginate(3);
+            ->where('ingresos.'.$criterio, 'like', '%'.$buscar.'%')->orderBy('ingresos.id','desc')->paginate(10);
         }
     
         //return $personas;
@@ -51,7 +51,43 @@ class IngresoController extends Controller
         ];
     }
 
-     
+     public function obtenerCabecera(Request $request)
+     {
+        if(!$request->ajax()) return redirect('/');
+        
+        $id = $request->id; 
+
+        
+        $ingreso = Ingreso::join('personas','ingresos.idproveedor','=','personas.id')
+            ->join('users','ingresos.idusuario','=','users.id')
+            ->select('ingresos.id','ingresos.tipo_comprobante','ingresos.serie_comprobante',
+                'ingresos.num_comprobante','ingresos.fecha_hora','ingresos.impuesto','ingresos.total',
+                'ingresos.estado','personas.nombre','users.usuario')
+            ->where('ingresos.id',$id)
+            ->orderBy('ingresos.id','desc')->take(1)->get();
+        
+    
+        //return $personas;
+        return [  'ingreso' => $ingreso];
+     }
+
+     public function obtenerDetalles(Request $request)
+     {
+        if(!$request->ajax()) return redirect('/');
+        
+        $id = $request->id; 
+
+        
+        $detalles = DetalleIngreso::join('articulos','detalle_ingresos.idarticulo','=','articulos.id') 
+            ->select('detalle_ingresos.cantidad','detalle_ingresos.precio',
+                'articulos.nombre as articulo')
+            ->where('detalle_ingresos.idingreso',$id)
+            ->orderBy('detalle_ingresos.id','desc')->get();
+        
+    
+        //return $personas;
+        return [  'detalles' => $detalles];
+     }
     /**
      * Store a newly created resource in storage.
      *
@@ -106,7 +142,7 @@ class IngresoController extends Controller
     {
         if(!$request->ajax()) return redirect('/');
         $ingreso = Ingreso::findOrFail($request->id); 
-        $ingreso->ingreso = 'Anulado';
+        $ingreso->estado = 'Anulado';
         $ingreso->save();
     }
 }
