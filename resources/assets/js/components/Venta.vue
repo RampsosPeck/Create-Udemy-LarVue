@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Ingresos
+                        <i class="fa fa-align-justify"></i> Ventas
                         <button type="button" @click="mostrarDetalle()" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
@@ -24,8 +24,8 @@
                                       <option value="num_comprobante">Número de comprobante</option>
                                       <option value="fecha_hora">Fecha-Hora</option> 
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarIngreso(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarIngreso(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-model="buscar" @keyup.enter="listarVenta(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarVenta(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                                     <tr>
                                         <th>Opciones</th>
                                         <th>Usuario</th>
-                                        <th>Proveedor</th>
+                                        <th>Cliente</th>
                                         <th>Tipo Comprobante</th>
                                         <th>Serie Comprobante</th>
                                         <th>Número Comprobante</th>
@@ -46,26 +46,26 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="ingreso in arrayIngreso" :key="ingreso.id">
+                                    <tr v-for="venta in arrayVenta" :key="venta.id">
                                         <td>
-                                            <button type="button" @click="verIngreso(ingreso.id)" class="btn btn-success btn-sm">
+                                            <button type="button" @click="verVenta(venta.id)" class="btn btn-success btn-sm">
                                               <i class="icon-eye"></i>
                                             </button>&nbsp;
-                                            <template v-if="ingreso.estado == 'Registrado'">
-                                                <button type="button" class="btn btn-danger btn-sm" @click="desactivarIngreso(ingreso.id)">
+                                            <template v-if="venta.estado == 'Registrado'">
+                                                <button type="button" class="btn btn-danger btn-sm" @click="desactivarVenta(venta.id)">
                                                     <i class="icon-trash"></i>
                                                 </button>
                                             </template> 
                                         </td>
-                                        <td v-text="ingreso.usuario"></td>
-                                        <td v-text="ingreso.nombre"></td>
-                                        <td v-text="ingreso.tipo_comprobante"></td>
-                                        <td v-text="ingreso.serie_comprobante"></td>
-                                        <td v-text="ingreso.num_comprobante"></td> 
-                                        <td v-text="ingreso.fecha_hora"></td>
-                                        <td v-text="ingreso.total"></td>
-                                        <td v-text="ingreso.impuesto"></td>
-                                        <td v-text="ingreso.estado"></td> 
+                                        <td v-text="venta.usuario"></td>
+                                        <td v-text="venta.nombre"></td>
+                                        <td v-text="venta.tipo_comprobante"></td>
+                                        <td v-text="venta.serie_comprobante"></td>
+                                        <td v-text="venta.num_comprobante"></td> 
+                                        <td v-text="venta.fecha_hora"></td>
+                                        <td v-text="venta.total"></td>
+                                        <td v-text="venta.impuesto"></td>
+                                        <td v-text="venta.estado"></td> 
                                     </tr>                                
                                 </tbody>
                             </table>
@@ -92,13 +92,13 @@
                         <div class="form-group row border"> 
                             <div class="col-md-9">
                                 <div class="form-group">
-                                    <label for="">Proveedor(*)</label>
+                                    <label for="">Cliente(*)</label>
                                     <v-select
-                                        :on-search="selectProveedor"
+                                        :on-search="selectCliente"
                                         label="nombre"
-                                        :options="arrayProveedor"
-                                        placeholder="Buscar Proveedores..."
-                                        :onChange="getDatosProveedor"                                        
+                                        :options="arrayCliente"
+                                        placeholder="Buscar Clientes..."
+                                        :onChange="getDatosCliente"                                        
                                     > 
                                     </v-select>
                                 </div>
@@ -126,9 +126,9 @@
                                 <input type="text" class="form-control" v-model="num_comprobante" placeholder="123x">
                             </div>
                             <div class="col-md-12 text-center">
-                                <div v-show="errorIngreso" class="row form-group">
+                                <div v-show="errorVenta" class="row form-group">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjIngreso" :key="error" v-text="error">
+                                        <div v-for="error in errorMostrarMsjVenta" :key="error" v-text="error">
                                             
                                         </div>
                                     </div>
@@ -136,11 +136,11 @@
                             </div>
                         </div>
                         <div class="form-group row border">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Articulo <span style="color:red;" v-show="idarticulo==0">(*Seleccione)</span> </label>
                                     <div class="form-inline">
-                                        <input type="text" class="form-control" v-model="codigo" @keyup.enter="buscarArticulo()" placeholder="Aquí ingrese el articulo">
+                                        <input type="text" class="form-control" v-model="codigo" @keyup.enter="buscarArticuloVenta()" placeholder="Aquí ingrese el articulo">
                                         <button @click="abrirModal()"  class="btn btn-primary">...</button>
                                         <input type="text" readonly class="form-control" v-model="articulo">
                                     </div>
@@ -160,6 +160,12 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
+                                    <label for="">Descuento </label>
+                                    <input type="number" value="0" class="form-control" v-model="descuento">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
                                     <button @click="agregarDetalle()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
                                 </div>
                             </div>
@@ -173,13 +179,14 @@
                                             <th>Articulo</th>
                                             <th>Precio</th>
                                             <th>Cantidad</th>
+                                            <th>Descuento</th>
                                             <th>Subtotal</th>
                                         </tr>
                                     </thead>
                                     <tbody v-if="arrayDetalle.length">
                                         <tr v-for="(detalle, index) in arrayDetalle" :key="detalle.id">
                                             <td>
-                                                <button type="button" @click="elinarDetalle(index)" class="btn btn-danger btn-sm">
+                                                <button type="button" @click="eliminarDetalle(index)" class="btn btn-danger btn-sm">
                                                     <i class="icon-close"></i>
                                                 </button>
                                             </td>
@@ -189,28 +196,31 @@
                                                 <input v-model="detalle.precio" type="number"  value="3" class="form-control">
                                             </td>
                                             <td>
-                                                <input v-model="detalle.cantidad" type="number"  value="2" class="form-control">
+                                                <span style="color:red;" v-show="detalle.cantidad>detalle.stock">Stock: {{ detalle.stock }}</span> <input v-model="detalle.cantidad" type="number"  value="2" class="form-control">
+                                            </td>
+                                            <td><span style="color:red;" v-show="detalle.descuento>(detalle.precio*detalle.cantidad)">Descuento superior</span> 
+                                                <input v-model="detalle.descuento" type="number"  value="2" class="form-control">
                                             </td>
                                             <td>
-                                                {{ detalle.precio*detalle.cantidad }}
+                                                {{ detalle.precio*detalle.cantidad-detalle.descuento }}
                                             </td>
                                         </tr>  
                                         <tr style="background-color: #CEECF5;">
-                                            <td colspan="4" align="right"><strong>Total Parcial: </strong></td>
+                                            <td colspan="5" align="right"><strong>Total Parcial: </strong></td>
                                             <td>$ {{ totalParcial=(total-totalImpuesto).toFixed(2)}}</td>
                                         </tr>
                                         <tr style="background-color: #CEECF5;">
-                                            <td colspan="4" align="right"><strong>Total Impuesto: </strong></td>
+                                            <td colspan="5" align="right"><strong>Total Impuesto: </strong></td>
                                             <td>$ {{ totalImpuesto=((total*impuesto)/(1+impuesto)).toFixed(2)}}</td>
                                         </tr>
                                         <tr style="background-color: #CEECF5;">
-                                            <td colspan="4" align="right"><strong>Total Neto: </strong></td>
+                                            <td colspan="5" align="right"><strong>Total Neto: </strong></td>
                                             <td>$ {{ total=calcularTotal }}</td>
                                         </tr>
                                     </tbody>
                                     <tbody v-else>
                                         <tr>
-                                            <td colspan="5" > No hay articulos agregados commit</td>
+                                            <td colspan="6" > No hay articulos agregados commit</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -219,7 +229,7 @@
                         <div class="form-group row  pull-right">
                             <div class="col-md-12">
                                 <button type="button" @click="ocultarDetalle()" class="btn btn-info">Cerrar</button>
-                                <button type="button" class="btn btn-primary" @click="registrarIngreso()">Registrar Compra</button>
+                                <button type="button" class="btn btn-primary" @click="registrarVenta()">Registrar Venta</button>
                             </div>
                         </div>
                     </div>
@@ -327,8 +337,8 @@
                                           <option value="descripcion">Descripción</option>
                                           <option value="codigo">Código</option>
                                         </select>
-                                        <input type="text" v-model="buscarA" @keyup.enter="listarArticulo(buscarA,criterioA)" class="form-control" placeholder="Texto a buscar">
-                                        <button type="submit" @click="listarArticulo(buscarA,criterioA)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <input type="text" v-model="buscarA" @keyup.enter="listarArticuloVenta(buscarA,criterioA)" class="form-control" placeholder="Texto a buscar">
+                                        <button type="submit" @click="listarArticuloVenta(buscarA,criterioA)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
                                 </div>
                             </div>
@@ -395,10 +405,9 @@
     export default {
         data (){
             return {
-                ingreso_id: 0,
-                idproveedor : 0,
-                proveedor : '',
-                nombre : '',
+                venta_id: 0,
+                idcliente : 0,
+                cliente : '', 
                 tipo_comprobante : 'BOLETA',
                 serie_comprobante : '',
                 num_comprobante : '',
@@ -406,15 +415,15 @@
                 total : 0.0, 
                 totalImpuesto : 0.0, 
                 totalParcial : 0.0, 
-                arrayIngreso : [],
-                arrayProveedor: [],
+                arrayVenta : [],
+                arrayCliente: [],
                 arrayDetalle : [],
                 listado: 1,
                 modal : 0,
                 tituloModal : '',
                 tipoAccion : 0,
-                errorIngreso : 0,
-                errorMostrarMsjIngreso : [],
+                errorVenta : 0,
+                errorMostrarMsjVenta : [],
                 pagination : {
                     'total' : 0,
                     'current_page' : 0,
@@ -433,7 +442,9 @@
                 codigo: '',
                 articulo: '',
                 precio: 0,
-                cantidad: 0 
+                cantidad: 0,
+                descuento: 0, 
+                stock: 0 
             }
         },
         components:{
@@ -470,47 +481,47 @@
             calcularTotal: function(){
                 var resultado=0.0;
                 for(var i=0; i<this.arrayDetalle.length; i++){
-                    resultado=resultado+(this.arrayDetalle[i].precio*this.arrayDetalle[i].cantidad)
+                    resultado=resultado+(this.arrayDetalle[i].precio*this.arrayDetalle[i].cantidad-this.arrayDetalle[i].descuento)
                 }
                 return resultado;
             }
         },
         methods : {
-            listarIngreso (page,buscar,criterio){
+            listarVenta (page,buscar,criterio){
                 let me=this;
-                var url= '/ingreso?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
+                var url= '/venta?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
-                    me.arrayIngreso = respuesta.ingresos.data;
+                    me.arrayVenta = respuesta.ventas.data;
                     me.pagination= respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            selectProveedor(search,loading){
+            selectCliente(search,loading){
                 let me=this;
                 loading(true)
 
-                var url= '/proveedor/selectProveedor?filtro='+search;
+                var url= '/cliente/selectCliente?filtro='+search;
                 axios.get(url).then(function (response) {
                     let respuesta = response.data;
                     q: search
-                    me.arrayProveedor=respuesta.proveedores;
+                    me.arrayCliente=respuesta.clientes;
                     loading(false)
                 })
                 .catch(function (error) {
                     console.log(respuesta);
                 });
             },
-            getDatosProveedor(val1){
+            getDatosCliente(val1){
                 let me = this;
                 me.loading = true;
-                me.idproveedor = val1.id;
+                me.idcliente = val1.id;
             },
-            buscarArticulo(){
+            buscarArticuloVenta(){
                 let me = this;
-                var url = '/articulo/buscarArticulo?filtro='+ me.codigo;
+                var url = '/articulo/buscarArticuloVenta?filtro='+ me.codigo;
 
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -519,6 +530,8 @@
                     if(me.arrayArticulo.length > 0){
                         me.articulo = me.arrayArticulo[0]['nombre'];
                         me.idarticulo = me.arrayArticulo[0]['id'];
+                        me.precio = me.arrayArticulo[0]['precio_venta'];
+                        me.stock = me.arrayArticulo[0]['stock'];
                     }else{
                         me.articulo = 'No existen articulos';
                         me.idarticulo = 0;
@@ -533,7 +546,7 @@
                 //Actualiza la página actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esa página
-                me.listarIngreso(page,buscar,criterio);
+                me.listarVenta(page,buscar,criterio);
             },
             encuentra(id){
                 var sw = 0;
@@ -557,18 +570,30 @@
                           text: 'Ese artículo ya fue agregado!' 
                         })
                     }else{
-                        me.arrayDetalle.push({
+                        if(me.cantidad > me.stock){
+                            Swal.fire({
+                              type: 'error',
+                              title: 'Oops...',
+                              text: 'No hay stock disponible!' 
+                            })
+                        }else{
+                            me.arrayDetalle.push({
                             idarticulo: me.idarticulo,
                             articulo: me.articulo,
                             cantidad: me.cantidad,
-                            precio: me.precio 
-                        });
+                            precio: me.precio, 
+                            descuento: me.descuento, 
+                            stock: me.stock, 
+                            });
 
-                        me.codigo="";
-                        me.idarticulo=0;
-                        me.articulo="";
-                        me.cantidad=0;
-                        me.precio=0;
+                            me.codigo="";
+                            me.idarticulo=0;
+                            me.articulo="";
+                            me.cantidad=0;
+                            me.precio=0;
+                            me.descuento=0;
+                            me.stock=0;
+                        }
                     }
                 }
 
@@ -586,7 +611,9 @@
                             idarticulo: data['id'],
                             articulo: data['nombre'],
                             cantidad: 1,
-                            precio: 1
+                            precio: data['precio_venta'],
+                            descuento: 0,
+                            stock:data['stock']
                         }); 
 
                         Swal.fire({
@@ -598,9 +625,9 @@
                         })
                     }
             },
-            listarArticulo(buscar, criterio){
+            listarArticuloVenta(buscar, criterio){
                 let me = this;
-                var url = '/articulo/listarArticulo?buscar='+ buscar + '&criterio='+ criterio;
+                var url = '/articulo/listarArticuloVenta?buscar='+ buscar + '&criterio='+ criterio;
                 axios.get(url)
                 .then((response)=>{
                     var respuesta = response.data;
@@ -610,7 +637,7 @@
                     console.log(error);
                 })
             },
-            elinarDetalle(index){
+            eliminarDetalle(index){
                 let me = this;
                 me.arrayDetalle.splice(index,1);
             },
@@ -785,7 +812,7 @@
             
         },
         mounted() {
-            this.listarIngreso(1,this.buscar,this.criterio);
+            this.listarVenta(1,this.buscar,this.criterio);
         }
     }
 </script>

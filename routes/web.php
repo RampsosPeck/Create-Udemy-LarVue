@@ -64,6 +64,16 @@ Route::group(['middleware' => ['auth']], function(){
 		Route::get('/cliente', 'ClienteController@index');
 		Route::post('/cliente/registrar', 'ClienteController@store');
 		Route::put('/cliente/actualizar', 'ClienteController@update');
+		Route::get('/cliente/selectCliente', 'ClienteController@selectCliente');
+
+		Route::get('/articulo/buscarArticuloVenta', 'ArticuloController@buscarArticuloVenta');
+		Route::get('/articulo/listarArticuloVenta', 'ArticuloController@listarArticuloVenta');
+
+		Route::get('/venta', 'VentaController@index'); 
+		Route::post('/venta/registrar', 'VentaController@store'); 
+		Route::put('/venta/desactivar', 'VentaController@desactivar');
+		Route::get('/venta/obtenerCabecera', 'VentaController@obtenerCabecera');
+		Route::get('/venta/obtenerDetalles', 'VentaController@obtenerDetalles');
 
 	});
 
@@ -84,6 +94,8 @@ Route::group(['middleware' => ['auth']], function(){
 		Route::put('/articulo/activar', 'ArticuloController@activar');
 		Route::get('/articulo/buscarArticulo', 'ArticuloController@buscarArticulo');
 		Route::get('/articulo/listarArticulo', 'ArticuloController@listarArticulo');
+		Route::get('/articulo/buscarArticuloVenta', 'ArticuloController@buscarArticuloVenta');
+		Route::get('/articulo/listarArticuloVenta', 'ArticuloController@listarArticuloVenta');
 
 		Route::get('/proveedor', 'ProveedorController@index');
 		Route::post('/proveedor/registrar', 'ProveedorController@store');
@@ -93,6 +105,7 @@ Route::group(['middleware' => ['auth']], function(){
 		Route::get('/cliente', 'ClienteController@index');
 		Route::post('/cliente/registrar', 'ClienteController@store');
 		Route::put('/cliente/actualizar', 'ClienteController@update');
+		Route::get('/cliente/selectCliente', 'ClienteController@selectCliente');
 
 		Route::get('/rol', 'RolController@index');
 		Route::get('/rol/selectRol', 'RolController@selectRol');
@@ -109,6 +122,12 @@ Route::group(['middleware' => ['auth']], function(){
 		Route::get('/ingreso/obtenerCabecera', 'IngresoController@obtenerCabecera');
 		Route::get('/ingreso/obtenerDetalles', 'IngresoController@obtenerDetalles');
 
+		Route::get('/venta', 'VentaController@index'); 
+		Route::post('/venta/registrar', 'VentaController@store'); 
+		Route::put('/venta/desactivar', 'VentaController@desactivar');
+		Route::get('/venta/obtenerCabecera', 'VentaController@obtenerCabecera');
+		Route::get('/venta/obtenerDetalles', 'VentaController@obtenerDetalles');
+		
 
 
 	}); 
