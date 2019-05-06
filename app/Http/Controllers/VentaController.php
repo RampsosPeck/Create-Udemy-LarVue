@@ -75,7 +75,7 @@ class VentaController extends Controller
         $detalles = DetalleVenta::join('articulos','detalle_ventas.idarticulo','=','articulos.id') 
             ->select('detalle_ventas.cantidad','detalle_ventas.precio','detalle_ventas.descuento',
                 'articulos.nombre as articulo')
-            ->where('detalle_ventas.idventa','=',$id)
+            ->where('detalle_ventas.idventas','=',$id)
             ->orderBy('detalle_ventas.id','desc')->get();
         
       
@@ -114,7 +114,7 @@ class VentaController extends Controller
             foreach ($detalles as $key => $det) {
 
                 $detalle = new DetalleVenta();
-                $detalle->idventa = $venta->id;
+                $detalle->idventas = $venta->id;
                 $detalle->idarticulo = $det['idarticulo'];
                 $detalle->cantidad = $det['cantidad'];
                 $detalle->precio = $det['precio'];

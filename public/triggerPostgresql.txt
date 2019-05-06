@@ -48,3 +48,54 @@ END;
 $BODY$
  LANGUAGE plpgsql VOLATILE -- Says the function is implemented in the plpgsql language; VOLATILE says the function has side effects.
 COST 100;
+
+
+
+
+
+DROP TRIGGER tr_updStockVenta ON ingresos
+
+CREATE  TRIGGER tr_updStockVenta AFTER INSERT ON detalle_ventas
+ FOR EACH ROW  
+  EXECUTE PROCEDURE stockventa();
+
+ 
+CREATE OR REPLACE FUNCTION stockventa()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+  UPDATE articulos SET stock = stock - NEW.cantidad 
+ WHERE articulos.id = NEW.idarticulo;
+ 
+  RETURN NEW;
+ 
+END;
+$BODY$
+ LANGUAGE plpgsql VOLATILE -- Says the function is implemented in the plpgsql language; VOLATILE says the function has side effects.
+COST 100;
+/*/////////////////*/
+ 
+/////////////**//*/*/
+DROP TRIGGER tr_updStockVentaAnular ON ventas
+
+
+CREATE  TRIGGER tr_updStockVentaAnular AFTER UPDATE ON ventas
+ FOR EACH ROW  
+  EXECUTE PROCEDURE actualizar_al_desactivar();
+
+ 
+CREATE OR REPLACE FUNCTION actualizar_al_desactivar()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+  UPDATE articulos  set stock = stock + dv.cantidad
+    FROM detalle_ventas  as dv
+      where dv.idarticulo = articulos.id
+     AND dv.idventas = new.id;
+  RETURN NEW;
+END;
+$BODY$
+ LANGUAGE plpgsql VOLATILE -- Says the function is implemented in the plpgsql language; VOLATILE says the function has side effects.
+COST 100;
+
+

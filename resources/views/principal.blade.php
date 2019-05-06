@@ -9,7 +9,7 @@
     <meta name="author" content="Ing. Jorge Peralta">
     <meta name="keyword" content="Sistema ventas Laravel Vue Js, Sistema compras Laravel Vue Js">
     <link rel="shortcut icon" href="img/favicon.png">
-    <title>Sistema Ventas - IncanatoIT</title>
+    <title>Sistema Ventas</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Icons -->
     <link href="css/plantilla.css" rel="stylesheet">
@@ -89,8 +89,8 @@
     </div>   
     </div>
     <footer class="app-footer">
-        <span><a href="http://www.incanatoit.com/">IncanatoIT</a> &copy; 2017</span>
-        <span class="ml-auto">Desarrollado por <a href="http://www.incanatoit.com/">IncanatoIT</a></span>
+        <span><a href="https://bit.ly/2UNp1iq">JoPe</a> &copy; 2017</span>
+        <span class="ml-auto">Desarrollado por <a href="https://bit.ly/2UNp1iq">Ing. Jorge Peralta</a></span>
     </footer>
     
 
