@@ -51,6 +51,9 @@
                                             <button type="button" @click="verVenta(venta.id)" class="btn btn-success btn-sm">
                                               <i class="icon-eye"></i>
                                             </button>&nbsp;
+                                            <button type="button" @click="pdfVenta(venta.id)" class="btn btn-info btn-sm">
+                                              <i class="icon-doc"></i>
+                                            </button>&nbsp;
                                             <template v-if="venta.estado == 'Registrado'">
                                                 <button type="button" class="btn btn-danger btn-sm" @click="desactivarVenta(venta.id)">
                                                     <i class="icon-trash"></i>
@@ -545,6 +548,9 @@
                 });
 
             },
+            pdfVenta(id){
+                 window.open('http://sistudelarvue.edu/venta/pdf/'+ id );
+            },
             cambiarPagina(page,buscar,criterio){
                 let me = this;
                 //Actualiza la página actual
@@ -661,7 +667,7 @@
                     'total' : this.total,
                     'data' : this.arrayDetalle 
 
-                }).then(function (response) { 
+                }).then(function (res) { 
                     Swal.fire({
                           position: 'top-end',
                           type: 'success',
@@ -685,6 +691,8 @@
                     me.codigo='';
                     me.descuento=0;
                     me.arrayDetalle=[];
+                    //window.open('http://sistudelarvue.edu/venta/pdf/'+ res.data.id );
+
                 }).catch(function (error) {
                     console.log(error);
                 });

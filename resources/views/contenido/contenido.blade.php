@@ -4,7 +4,7 @@
         @if(Auth::check())
             @if(Auth::user()->idrol == 1)
                 <template v-if="menu==0">
-                    <h1>Escritorio</h1>
+                    <dashboard></dashboard>
                 </template>
 
                 <template v-if="menu==1">
@@ -40,11 +40,11 @@
                 </template>
 
                 <template v-if="menu==9">
-                    <h1>Reporte de Ingresos</h1>
+                    <consultaingreso></consultaingreso>
                 </template>
 
                 <template v-if="menu==10">
-                    <h1>Reporte de Ventas</h1>
+                     <consultaventa></consultaventa>
                 </template>
 
                 <template v-if="menu==11">
@@ -55,6 +55,9 @@
                     <h1>Acerca de..</h1>
                 </template>
                 @elseif (Auth::user()->idrol == 2)
+                    <template v-if="menu==0">
+                        <dashboard></dashboard>
+                    </template>
                     <template v-if="menu==5">
                         <venta></venta>
                     </template>
@@ -63,7 +66,7 @@
                         <cliente></cliente>
                     </template>
                     <template v-if="menu==10">
-                        <h1>Reporte de Ventas</h1>
+                        <consultaventa></consultaventa>
                     </template>
 
                     <template v-if="menu==11">
@@ -74,7 +77,9 @@
                         <h1>Acerca de..</h1>
                     </template>
                 @elseif (Auth::user()->idrol == 3)
-                     
+                    <template v-if="menu==0">
+                        <dashboard></dashboard>
+                    </template> 
                     <template v-if="menu==1">
                         <categoria></categoria>
                     </template>
@@ -92,7 +97,7 @@
                     </template> 
 
                     <template v-if="menu==9">
-                        <h1>Reporte de Ingresos</h1>
+                         <consultaingreso></consultaingreso>
                     </template> 
 
                     <template v-if="menu==11">

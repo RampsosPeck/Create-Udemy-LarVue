@@ -12,6 +12,9 @@
                         <button type="button" class="btn btn-secondary" @click="abrirModal('articulo','registrar')" >
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
+                        <button type="button" class="btn btn-info" @click="cargarPdf()" >
+                            <i class="icon-doc"></i>&nbsp;Reporte
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -244,6 +247,9 @@
                 .catch((error)=>{
                     console.log(error);
                 })
+            },
+            cargarPdf(){
+                window.open('http://sistudelarvue.edu/articulo/listarPdf','_blank');
             },
             selectCategoria(){
                 let me = this;

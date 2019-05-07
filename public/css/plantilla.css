@@ -7642,7 +7642,7 @@ base-chart.chart {
   height: 55px;
   padding: 0;
   margin: 0;
-  background-color: #60acc9 !important;
+  background-color: #fff;
   border-bottom: 1px solid #c2cfd6; }
   .app-header.navbar .navbar-brand {
     display: inline-block;
@@ -7650,7 +7650,7 @@ base-chart.chart {
     height: 55px;
     padding: 0.5rem 1rem;
     margin-right: 0;
-    background-color: #60acc9 !important;
+    background-color: #fff;
     background-image: url("../img/logo.png");
     background-repeat: no-repeat;
     background-position: center center;
@@ -7765,7 +7765,7 @@ base-chart.chart {
       flex-direction: column;
   padding: 0;
   color: #fff;
-  background: #086f96 !important; }
+  background: #29363d; }
   .sidebar .sidebar-close {
     position: absolute;
     right: 0;
