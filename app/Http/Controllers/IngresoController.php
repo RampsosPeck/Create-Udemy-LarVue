@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Ingreso;
+use App\User;
 use App\DetalleIngreso;
+use App\Notifications\NotifyAdmin;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 class IngresoController extends Controller
@@ -128,6 +130,29 @@ class IngresoController extends Controller
 
             }
             
+            $fechaActual = date('Y-m-d');
+            $numVentas = DB::table('ventas')->whereDate('created_at', $fechaActual)->count();
+            $numIngresos = DB::table('ingresos')->whereDate('created_at', $fechaActual)->count();
+
+            $arregloDatos = [
+                'ventas' => [
+                    'numero' => $numVentas,
+                    'msj' => 'Ventas'
+                ],
+                'ingresos' => [
+                    'numero' => $numIngresos,
+                    'msj' => 'Ingresos'
+                ],
+            ];
+
+            $allUsers = User::all();
+
+            foreach($allUsers as $notificar)
+            {
+                User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloDatos));
+            }
+
+
             \DB::commit();
 
         }catch(Exception $e) {

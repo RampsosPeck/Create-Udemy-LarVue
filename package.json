@@ -19,6 +19,8 @@
         "vue": "^2.5.7"
     },
     "dependencies": {
+        "laravel-echo": "^1.5.3",
+        "pusher-js": "^4.4.0",
         "vue-barcode": "^1.2.0",
         "vue-select": "^3.0.2"
     }
